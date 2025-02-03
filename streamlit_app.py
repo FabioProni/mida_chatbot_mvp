@@ -80,7 +80,8 @@ for chat in st.session_state.chats:
         st.session_state.selected_chat = chat["id"]
 
 # Area principale della chat
-st.title("🤖 Chat con il tuo PDF")
+#st.title("🤖 Chat con il tuo PDF")
+st.title(st.secrets["openai_api_key"])
 if not st.session_state.selected_chat:
     st.write("Seleziona una chat o creane una nuova dalla sidebar.")
 else:
