@@ -5,7 +5,7 @@ import os
 import tempfile
 
 # Configura l'API Key di OpenAI (Sostituire con la propria chiave API)
-openai.api_key = "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"
+openai.api_key = "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"
 
 # Configura lo stato della sessione
 if "chats" not in st.session_state:
