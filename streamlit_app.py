@@ -88,7 +88,7 @@ if st.session_state.show_tone_settings:
     st.sidebar.text_area("Modifica il tone of voice:", value=st.session_state.tone_of_voice, key="tone_of_voice")
 
 # Area principale della chat
-st.title("🤖 Chat con il tuo PDF")
+st.title("🤖 Chat con il tuo PDF 1")
 if not st.session_state.selected_chat:
     st.write("Seleziona una chat o creane una nuova dalla sidebar.")
 else:

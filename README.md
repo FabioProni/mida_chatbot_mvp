@@ -17,3 +17,10 @@ A simple Streamlit app that shows how to build a chatbot using OpenAI's GPT-3.5.
    ```
    $ streamlit run streamlit_app.py
    ```
+
+deploy:
+git init .
+git commit -m "first commit"
+git push -u origin main
+
+run: streamlit run /workspaces/mida_chatbot_mvp/streamlit_app.py
