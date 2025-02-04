@@ -110,5 +110,6 @@ else:
         response = ask_gpt_with_pdf(user_input)
         chat_data["messages"].append({"role": "user", "content": user_input})
         chat_data["messages"].append({"role": "assistant", "content": response})
+        #st.session_state["input_box"] = ""
         #st.session_state["user_input"] = ""  # Resetta il textbox dopo l'invio
         st.rerun()
