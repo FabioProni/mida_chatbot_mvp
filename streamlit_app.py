@@ -4,7 +4,7 @@ import fitz  # PyMuPDF per estrarre testo dal PDF
 import os
 import tempfile
 
-# Configura l'API Key di OpenAI (Sostituire con la propria chiave API)
+# Configura l'API Key di OpenAI
 openai.api_key = st.secrets["openai_api_key"]
 
 # Configura lo stato della sessione
@@ -14,9 +14,10 @@ if "selected_chat" not in st.session_state:
     st.session_state.selected_chat = None  # Chat selezionata
 if "pdf_text" not in st.session_state:
     st.session_state.pdf_text = ""  # Testo estratto dal PDF
-
-# Limite massimo di token per evitare richieste troppo lunghe
-MAX_TOKENS = 4000  # Limite da regolare in base alle necessità
+if "tone_of_voice" not in st.session_state:
+    st.session_state.tone_of_voice = "Rispondi in modo chiaro e professionale."  # Prompt predefinito
+if "show_tone_settings" not in st.session_state:
+    st.session_state.show_tone_settings = False  # Controllo per mostrare il box di impostazione del tone of voice
 
 # Funzione per estrarre testo dal PDF
 def extract_text_from_pdf(pdf_path):
@@ -36,7 +37,7 @@ if uploaded_file:
     st.sidebar.success("PDF caricato e analizzato con successo!")
 
 # Funzione per troncare il contesto se diventa troppo lungo
-def truncate_messages(messages, max_tokens=MAX_TOKENS):
+def truncate_messages(messages, max_tokens=4000):
     total_tokens = 0
     truncated_messages = []
     for message in reversed(messages):  # Inizia dagli ultimi messaggi
@@ -55,8 +56,8 @@ def ask_gpt_with_pdf(query):
     chat_data = next(c for c in st.session_state.chats if c["id"] == st.session_state.selected_chat)
 
     # Creiamo la lista dei messaggi includendo lo storico della conversazione e tronchiamo se troppo lunga
-    messages = [{"role": "system", "content": "Rispondi solo basandoti sul documento caricato."}]
-    truncated_chat = truncate_messages(chat_data["messages"], MAX_TOKENS)
+    messages = [{"role": "system", "content": f"{st.session_state.tone_of_voice}\nRispondi solo basandoti sul documento caricato."}]
+    truncated_chat = truncate_messages(chat_data["messages"], 4000)
     messages.extend(truncated_chat)  # Aggiunge lo storico ridotto
     messages.append({"role": "user", "content": f"Documento:\n{st.session_state.pdf_text}\n\nDomanda: {query}"})  # Aggiunge il documento e la nuova domanda
 
@@ -79,6 +80,13 @@ for chat in st.session_state.chats:
     if st.sidebar.button(chat["id"]):
         st.session_state.selected_chat = chat["id"]
 
+# Pulsante per mostrare/nascondere le impostazioni del tone of voice
+if st.sidebar.button("⚙️ Imposta Tone of Voice"):
+    st.session_state.show_tone_settings = not st.session_state.show_tone_settings
+
+if st.session_state.show_tone_settings:
+    st.sidebar.text_area("Modifica il tone of voice:", value=st.session_state.tone_of_voice, key="tone_of_voice")
+
 # Area principale della chat
 st.title("🤖 Chat con il tuo PDF")
 if not st.session_state.selected_chat:
@@ -92,9 +100,10 @@ else:
         st.write(f"{role}: {message['content']}")
     
     # Box di input per l'utente
-    user_input = st.text_input("Fai una domanda sul PDF:")
+    user_input = st.text_input("Fai una domanda sul PDF:", key="user_input")
     if st.button("Invia") and user_input:
         response = ask_gpt_with_pdf(user_input)
         chat_data["messages"].append({"role": "user", "content": user_input})
         chat_data["messages"].append({"role": "assistant", "content": response})
+        st.session_state["user_input"] = ""  # Resetta il textbox dopo l'invio
         st.rerun()
