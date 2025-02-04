@@ -20,6 +20,8 @@ if "show_tone_settings" not in st.session_state:
     st.session_state.show_tone_settings = False  # Controllo per mostrare il box di impostazione del tone of voice
 if "language" not in st.session_state:
     st.session_state.language = "it"  # Imposta la lingua predefinita in italiano
+if "user_input" not in st.session_state:
+    st.session_state.user_input = ""
 
 # Mostra il logo dell'app
 st.image("media/mida_logo_1000.png", width=350)
@@ -105,10 +107,10 @@ else:
         st.write(f"{role}: {message['content']}")
     
     # Box di input per l'utente
-    user_input = st.text_input("Fai una domanda sul tuo PDF:", key="user_input")
+    user_input = st.text_input("Fai una domanda sul tuo PDF:", key="user_input", value=st.session_state.user_input)
     if st.button("Invia") and user_input:
         response = ask_gpt_with_pdf(user_input)
         chat_data["messages"].append({"role": "user", "content": user_input})
         chat_data["messages"].append({"role": "assistant", "content": response})
-        st.session_state["user_input"] = ""  # Resetta il textbox dopo l'invio
+        st.session_state.user_input = ""  # Resetta il textbox dopo l'invio
         st.rerun()
