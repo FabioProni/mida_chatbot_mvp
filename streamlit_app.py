@@ -28,7 +28,7 @@ if "messages" not in st.session_state:
     st.session_state.messages = []  # Memorizza la chat corrente
 
 # Mostra il logo dell'app
-st.image("/workspaces/mida_chatbot_mvp/media/mida_logo_1000.png", width=350)
+st.image("media/mida_logo_1000.png", width=350)
 
 # Funzione per estrarre testo dal PDF
 def extract_text_from_pdf(pdf_path):
