@@ -6,6 +6,15 @@ import os
 import tempfile
 import sys
 
+# Imposta la lingua italiana per tutta l'app
+def set_italian_locale():
+    import locale
+    try:
+        locale.setlocale(locale.LC_ALL, 'it_IT.UTF-8')
+    except:
+        pass
+set_italian_locale()
+
 # Configura il client OpenAI con l'API Key
 client = OpenAI(api_key=st.secrets["openai_api_key"])
 
